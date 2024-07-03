@@ -3,9 +3,3 @@
 # Start the Apache service
 service apache2 start
 
-# Ensure Apache starts on boot
-update-rc.d apache2 defaults
-
-# Create an HTML file with "Hello Holberton" content
-echo "Hello Holberton" > /var/www/html/index.html
-
