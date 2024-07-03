@@ -1,13 +1,6 @@
 #!/usr/bin/env bash
 # Script that turns on an Apache Service
-# Inside the running container
+# run apache on designated container
 
-# Update package list and install Apache
-apt-get update
-apt-get install -y apache2
-
-# Start the Apache service
+echo "ServerName localhost" >> /etc/apache2.conf
 service apache2 start
-
-# Create an HTML file with "Hello Holberton" content
-echo "Hello Holberton" > /var/www/html/index.html
