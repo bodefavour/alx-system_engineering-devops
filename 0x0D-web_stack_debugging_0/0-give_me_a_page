@@ -1,9 +1,5 @@
 #!/usr/bin/env bash
 # Script that starts an Apache service
-# Update package list and install Apache
-apt-get update
-apt-get install -y apache2
-
 # Start the Apache service
 service apache2 start
 
