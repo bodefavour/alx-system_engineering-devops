@@ -6,6 +6,6 @@ for pid in /proc/[0-9]*/; do
     # Check if the process name contains "bash"
     if grep -q "bash" "/proc/$pid/comm"; then
         # Display the PID and process name
-        echo "PID: $pid, Process Name: $(cat /proc/$pid/comm)"
+        echo "PID: $pid, Process Name: $(cat /proc/"$pid"/comm)"
     fi
 done
