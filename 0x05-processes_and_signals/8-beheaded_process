@@ -2,17 +2,18 @@
 # Kill the '7-highlander' process using pkill
 PID=$(pgrep -f "7-highlander")
 
-# Check if the process was found
-if [ -n "$PID" ]; then
-    # Attempt to terminate the process
-    kill "$PID"
-    
-    # Check if the kill command was successful
-    if kill "$PID"; then
-        echo "OK"
-    else
-        echo "Failed to stop 7-highlander process."
-    fi
+# Check if any PIDs were found
+if [ -n "$PIDS" ]; then
+    # Loop through each PID and attempt to terminate the process
+    for PID in $PIDS; do
+        if kill "$PID"; then
+            echo "OK"
+        else
+            echo "Failed to stop 7-highlander process with PID $PID."
+            exit 1
+        fi
+    done
 else
     echo "7-highlander process not found."
+    exit 1
 fi
