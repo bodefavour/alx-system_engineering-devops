@@ -8,7 +8,7 @@ if [ -n "$PID" ]; then
     kill "$PID"
     
     # Check if the kill command was successful
-    if [ $? -eq 0 ]; then
+    if kill "PID"; then
         echo "OK"
     else
         echo "Failed to stop 7-highlander process."
