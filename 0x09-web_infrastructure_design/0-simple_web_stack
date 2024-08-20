@@ -1,0 +1,51 @@
+Designing a One-Server Web Infrastructure for www.foobar.com
+
+Scenario Overview:
+A user wants to access the website hosted at `www.foobar.com`. The request will be handled by a single server running a LAMP stack (Linux, Apache, MySQL, PHP/Perl/Python), but we'll use Nginx instead of Apache for the web server.
+
+1. Server:
+A **server** is a powerful computer that hosts websites, applications, and databases. It processes incoming requests from users and serves the required content. In this setup, the server's IP address is `8.8.8.8`.
+
+2. Domain Name:
+The **domain name** `foobar.com` is a human-readable address that users enter into their web browsers. It maps to the server's IP address using the Domain Name System (DNS). The domain name helps users find your website without needing to remember an IP address.
+
+3. DNS Record (www.foobar.com):
+- The DNS record `www` in `www.foobar.com` is a **CNAME (Canonical Name)** or **A record**. A **CNAME** maps one domain to another domain, while an **A record** maps a domain to an IP address. In this case, `www.foobar.com` points to the IP `8.8.8.8`.
+
+4. Web Server (Nginx):
+The web server is software (in this case, Nginx) that handles HTTP requests from users. It serves static content like HTML, CSS, and images. It also forwards dynamic requests to the application server if needed. Nginx listens for requests on port 80 (HTTP) or 443 (HTTPS) and routes them to the appropriate service.
+
+5. Application Server:
+The application server is responsible for running the application code. It processes business logic, interacts with the database, and generates dynamic content to be served by the web server. In this setup, the application server could be something like Gunicorn, uWSGI, or PHP-FPM depending on the application language.
+
+6. Application Files:
+The application files contain the website's codebase (e.g., HTML, CSS, JavaScript, PHP, Python scripts). These files are stored on the server and are executed by the application server to generate dynamic web pages
+
+7. Database (MySQL):
+The database (MySQL) stores data for the application, such as user information, content, and configurations. The application server queries the database to retrieve or store data as needed.
+
+8. User Request Flow:
+1. A user types `www.foobar.com` into their browser.
+2. The browser queries a DNS server to resolve `www.foobar.com` to `8.8.8.8`.
+3. The browser sends an HTTP/HTTPS request to `8.8.8.8`.
+4. The Nginx web server on the server receives the request.
+5. Nginx serves static content directly or forwards dynamic requests to the application server.
+6. The application server processes the request, interacting with the MySQL database if needed.
+7. The application server sends the response back to Nginx.
+8. Nginx returns the content to the user's browser, which renders the webpage.
+
+Communication with User’s Computer:
+- The server communicates with the user's computer using the HTTP/HTTPS protocol over the internet.
+
+Infrastructure Issues:
+1. Single Point of Failure (SPOF):
+   - If the server fails, the entire website becomes inaccessible because all services (web, application, database) are hosted on a single server.
+
+2. Downtime During Maintenance:
+   - When deploying new code or performing maintenance, the web server might need to be restarted, causing temporary downtime for the website.
+
+3. Scalability Issues:
+   - This infrastructure cannot easily handle a significant increase in traffic. The single server might become overwhelmed, leading to slow performance or crashes.
+
+Conclusion:
+This one-server setup is simple and cost-effective for small websites with low to moderate traffic. However, it has limitations in terms of redundancy, scalability, and maintenance. To handle more traffic and ensure high availability, a more complex, multi-server infrastructure would be needed.
