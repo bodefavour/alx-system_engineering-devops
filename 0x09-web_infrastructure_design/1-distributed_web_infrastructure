@@ -1,0 +1,59 @@
+### Designing a Three-Server Web Infrastructure for www.foobar.com
+
+Scenario Overview:
+We are designing a three-server web infrastructure to host the website www.foobar.com. This setup includes a load balancer, a web server, an application server, and a database. The goal is to improve redundancy, load distribution, and scalability compared to a single-server setup.
+
+1. Infrastructure Components:
+
+1. Load Balancer (HAProxy):
+   - Role: The load balancer distributes incoming traffic across multiple servers to ensure that no single server is overwhelmed. This improves the website's availability and scalability.
+   - Distribution Algorithm: 
+     - The load balancer is configured with the Round-Robin algorithm. This algorithm distributes requests sequentially to each server in the pool, ensuring an even distribution of traffic. It’s simple and effective for load balancing when servers have similar capabilities.
+   - Active-Active Setup:
+     - The load balancer is enabling an Active-Active setup. This means that multiple servers (web and application servers) are actively handling requests simultaneously, allowing for higher availability and better resource utilization.
+   - Active-Passive Setup:
+     - In contrast, an Active-Passive setup would have one active server handling requests while the other(s) are on standby, ready to take over if the active server fails. Active-Active is preferred in this design for better performance and redundancy.
+
+2. Web Server (Nginx):
+   - Role: The web server handles HTTP/HTTPS requests, serving static content and forwarding dynamic requests to the application server.
+   - Why Added: Having a dedicated web server improves the separation of concerns and allows for better handling of static content, SSL termination, and caching.
+
+3. Application Server:
+   - Role: The application server processes the business logic and interacts with the database to generate dynamic content.
+   - Why Added: A dedicated application server ensures that application processing is separate from web request handling, improving performance and scalability.
+
+4. Database (MySQL):
+   - Role: The database stores and manages data for the application.
+   - Primary-Replica (Master-Slave) Cluster:
+     - Primary Node: The primary (master) node handles all write operations and propagates changes to the replica (slave) nodes.
+     - Replica Node: The replica (slave) nodes handle read operations, which can reduce the load on the primary node and improve read performance.
+   - Why Added: The Primary-Replica setup ensures data redundancy and allows for load distribution, especially for read-heavy applications.
+
+5. Servers:
+   - Server 1: Hosts the Web Server (Nginx).
+   - Server 2: Hosts the Application Server.
+   - Server 3: Hosts the Database (MySQL).
+
+2. User Request Flow:
+
+1. A user types www.foobar.com into their browser.
+2. The DNS resolves www.foobar.com to the IP address of the load balancer.
+3. The Load Balancer receives the request and distributes it to one of the available servers based on the Round-Robin algorithm.
+4. The Web Server (Nginx) handles the request, serving static content or forwarding dynamic requests to the Application Server.
+5. The Application Server processes the dynamic content, interacting with the Database (MySQL) if necessary.
+6. The response is sent back through the Web Server and then to the user via the Load Balancer.
+
+3. Issues with This Infrastructure:
+
+1. Single Point of Failure (SPOF):
+   - If the load balancer fails, the entire system becomes inaccessible. This is a critical SPOF that could be mitigated with redundant load balancers.
+
+2. Security Issues:
+   - No Firewall: The infrastructure lacks a firewall, making it vulnerable to attacks.
+   - No HTTPS: Without HTTPS, data is transmitted in plaintext, which is insecure. Adding SSL/TLS would secure the communication.
+
+3. No Monitoring:
+   - Without monitoring tools, it’s difficult to track performance, detect issues, or respond to failures promptly.
+
+Conclusion:
+This three-server setup improves upon the single-server infrastructure by introducing redundancy, load distribution, and better resource separation. However, it has limitations, including potential SPOFs, security vulnerabilities, and the lack of monitoring. Addressing these issues would involve adding redundant components, implementing security measures, and integrating monitoring solutions.
