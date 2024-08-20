@@ -1,0 +1,59 @@
+Certainly! Here’s the revised version without any bold formatting:
+
+---
+
+### Designing a Secure Three-Server Web Infrastructure for www.foobar.com
+
+Scenario Overview:
+We are designing a secure three-server web infrastructure for hosting the website www.foobar.com. The setup includes load balancing, security measures (firewalls, SSL certificates), and monitoring capabilities. The goal is to ensure the website is resilient, secure, and can handle encrypted traffic while being monitored for performance and issues.
+
+Infrastructure Components:
+
+1. Load Balancer (HAProxy):
+   - Role: Distributes incoming traffic across multiple servers to ensure even load distribution, enhancing availability and performance.
+   - Why Added: Essential for managing traffic to multiple servers, preventing any single server from becoming a bottleneck.
+   - SSL Termination: The SSL certificate is configured at the load balancer, allowing it to decrypt HTTPS traffic and forward it to the backend servers over HTTP.
+   - Issue: Terminating SSL at the load balancer can be an issue because it leaves the traffic between the load balancer and backend servers unencrypted, which could be a security risk if these connections are not secure.
+
+2. Web Server (Nginx):
+   - Role: Handles HTTP/HTTPS requests, serves static content, and forwards dynamic content requests to the application server.
+   - Why Added: Dedicated web server improves the handling of web requests, static content, and SSL termination.
+
+3. Application Server:
+   - Role: Processes business logic, handles dynamic content, and interacts with the database.
+   - Why Added: Ensures separation of concerns by isolating the application logic from web request handling, improving scalability and performance.
+
+4. Database (MySQL) with Primary-Replica Setup:
+   - Role: Stores and manages the data required by the application.
+   - Primary-Replica Setup:
+     - Primary Node: Handles all write operations.
+     - Replica Node: Handles read operations and receives updates from the primary node.
+   - Issue: Having only one MySQL server capable of accepting writes can be a bottleneck and a single point of failure. If the primary node fails, no write operations can be performed until it is restored or a failover occurs.
+
+5. Firewalls:
+   - Role: Protect each server from unauthorized access by controlling incoming and outgoing network traffic based on predetermined security rules.
+   - Why Added: Firewalls are critical for securing the servers from external threats, such as hacking attempts or DDoS attacks. They provide a layer of defense by filtering traffic and blocking unauthorized access.
+
+6. SSL Certificate:
+   - Role: Encrypts traffic between the user's browser and the server, ensuring that data is securely transmitted.
+   - Why Added: Serving traffic over HTTPS is essential for protecting sensitive data (such as user credentials) from being intercepted by malicious actors. It also helps in improving user trust and search engine ranking.
+
+7. Monitoring Clients (Sumologic or other):
+   - Role: Collects and sends performance and health data from each server to a centralized monitoring service.
+   - Why Added: Monitoring is crucial for tracking server performance, detecting issues in real-time, and responding to potential problems before they impact users.
+   - How It Works: The monitoring tool collects data such as CPU usage, memory usage, disk I/O, network traffic, and application logs. This data is then sent to a monitoring service like Sumologic for analysis and alerting.
+   - Monitoring QPS (Queries Per Second): To monitor QPS on the web server, you would configure the monitoring tool to track the number of requests processed by the web server over time. This could involve parsing web server logs or using built-in metrics from the web server.
+
+Issues with This Infrastructure:
+
+1. SSL Termination at the Load Balancer:
+   - Issue: Terminating SSL at the load balancer means that traffic between the load balancer and backend servers is unencrypted. If this internal network is compromised, sensitive data could be exposed. To mitigate this, SSL could be used end-to-end, from the client to the backend servers.
+
+2. Single Write-Capable MySQL Server:
+   - Issue: Relying on a single MySQL server for writes introduces a single point of failure. If the primary node goes down, no write operations can occur until failover is complete. This can lead to downtime or data inconsistency.
+
+3. Identical Servers with All Components:
+   - Issue: If all servers are configured identically (each running the database, web server, and application server), it can lead to resource contention, making it difficult to scale or troubleshoot. It's better to have dedicated roles for each server to optimize performance and management.
+
+Conclusion:
+This three-server infrastructure design enhances security, reliability, and performance by introducing firewalls, SSL encryption, and monitoring. However, it still has challenges, such as the potential security risk of SSL termination at the load balancer, the limitation of a single write-capable database server, and the issues with identical server configurations. Addressing these issues would require additional configurations, such as end-to-end SSL encryption, implementing database failover mechanisms, and optimizing server roles.
